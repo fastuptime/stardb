@@ -1,14 +1,14 @@
 {
   "name": "stardb",
-  "version": "1.0.0",
-  "description": "A lightweight, reliable, easy-to-use, simple, fast, and persistent JSON database for Node.js",
+  "version": "1.1.0",
+  "description": "A lightweight, reliable, easy-to-use, simple, fast, JSON/YAML database for Node.js",
   "main": "src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/main.js"
   },
   "author": "Can <fastuptime@gmail.com>",
-  "license": "MIT", 
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/fastuptime/stardb"
@@ -16,5 +16,29 @@
   "bugs": {
     "url": "https://github.com/fastuptime/stardb/issues"
   },
-  "keywords": ["json", "database", "persistence", "node-js", "async", "lightweight", "reliable", "easy-to-use", "simple", "fast", "jsondb", "stardb"]
+  "keywords": [
+    "json",
+    "database",
+    "persistence",
+    "node-js",
+    "async",
+    "lightweight",
+    "reliable",
+    "easy-to-use",
+    "simple",
+    "fast",
+    "jsondb",
+    "stardb",
+    "yaml",
+    "yml",
+    "yamldb",
+    "yaml-database",
+    "node-yaml",
+    "node-yaml-database",
+    "node-yaml-db",
+    "node-yamldb"
+  ],
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
 }

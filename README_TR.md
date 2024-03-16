@@ -1,15 +1,24 @@
 ## 🌟 StarDB: Kolay ve Güvenilir Kalıcı JSON Veritabanı
 
+
+### 🚀 Sürüm 1.1.0'daki yenilikler: YAML Desteği!
+Artık StarDB, JSON'un yanı sıra YAML dosya formatını da destekliyor. Daha iyi okunabilirlik ve esneklik için verilerinizi YAML formatında saklayabilirsiniz.
+
+```js
+// YAML ile örnek kullanım
+const db = new StarDB('data.yaml');
+```
+
 **Giriş**
 
-StarDB, Node.js için JSON verilerini kalıcı olarak depolamak ve yönetmek için basit ve güvenilir bir çözüm sunan hafif ve asenkron bir modüldür. Tanıdık bir anahtar-değer arayüzü ile dosya tabanlı veri depolama işlemini basitleştirir ve kalıcı ancak esnek veri yönetimi gerektiren uygulamalar için mükemmel bir seçimdir.
+StarDB, Node.js için JSON/YAML verilerini kalıcı olarak depolamak ve yönetmek için basit ve güvenilir bir çözüm sunan hafif ve asenkron bir modüldür. Tanıdık bir anahtar-değer arayüzü ile dosya tabanlı veri depolama işlemini basitleştirir ve kalıcı ancak esnek veri yönetimi gerektiren uygulamalar için mükemmel bir seçimdir.
 
 **Özellikler:**
 
-* **Kolay Kullanım:** Sezgisel API, JSON verileriyle çalışmayı basit ve hızlı hale getirir.
+* **Kolay Kullanım:** Sezgisel API, JSON, YAML verileriyle çalışmayı basit ve hızlı hale getirir.
 * **Güvenilirlik:** Veritabanı dosyaları, veri kaybını önleyen sağlam bir formatta saklanır.
 * **Hız:** Veritabanı sorguları hızlı ve verimlidir.
-* **Esneklik:** JSON'un tüm gücünden yararlanarak karmaşık veri yapıları depolayabilirsiniz.
+* **Esneklik:** JSON ve YAML tüm gücünden yararlanarak karmaşık veri yapıları depolayabilirsiniz.
 * **Genişletilebilir:** Gelişmiş işlevsellik için özel modüller ve eklentiler ekleyebilirsiniz.
 
 **🚀 Kurulum:**
@@ -32,13 +41,15 @@ const StarDB = require('stardb');
 
 ```javascript
 const db = new StarDB('data.json'); // 'data.json'u istediğiniz dosya adıyla değiştirin
+// veya
+const db = new StartDB('data.yaml'); // 'data.yaml'u istediğiniz dosya adıyla değiştirin
 ```
 
 Belirtilen dosya ('data.json' bu örnekte) ile ilişkili bir StarDB örneği oluşturur. Dosya mevcut değilse, StarDB ilk kullanımda otomatik olarak oluşturacaktır.
 
 3. **CRUD İşlemleri:**
 
-StarDB, JSON verileriniz üzerinde yaygın CRUD (Oluşturma, Okuma, Güncelleme, Silme) işlemleri için yöntemler sunar:
+StarDB, JSON/YAML verileriniz üzerinde yaygın CRUD (Oluşturma, Okuma, Güncelleme, Silme) işlemleri için yöntemler sunar:
 
 * **`set(key, value)`:** Veritabanına bir anahtar-değer çifti depolar.
 * **`get(key)`:** Bir anahtarla ilişkilendirilmiş değeri alır.

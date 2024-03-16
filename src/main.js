@@ -1,6 +1,8 @@
+
 const { promises } = require('fs');
 const { access, constants } = require('fs').promises;
 const EventEmitter = require('events');
+const YAML = require('js-yaml');
 
 class StarDB extends EventEmitter {
     constructor(file) {
@@ -8,11 +10,20 @@ class StarDB extends EventEmitter {
         this.file = file;
         this.data = {};
         this.load().catch(error => console.error('Error loading data:', error));
+
+        
     }
 
     async save() {
         try {
-            await promises.writeFile(this.file, JSON.stringify(this.data, null, 4));
+            if (this.file.endsWith('.json')) {
+                await promises.writeFile(this.file, JSON.stringify(this.data, null, 4));
+            } else if (this.file.endsWith('.yaml')) {
+                const yamlData = YAML.dump(this.data);
+                await promises.writeFile(this.file, yamlData);
+            } else {
+                throw new Error('Unsupported file format. Support: github.com/fastuptime');
+            }
         } catch (error) {
             throw new Error(`Error saving data: ${error.message}. Support: github.com/fastuptime`);
         }
@@ -20,15 +31,30 @@ class StarDB extends EventEmitter {
 
     async load() {
         try {
-            const fileExists = await access(this.file, constants.F_OK);
-            if (fileExists) {
-                const data = await promises.readFile(this.file);
+            const fileExists = await access(this.file, constants.F_OK).then(() => true).catch(() => false);
+            if (!fileExists) {
+                if (this.file.endsWith('.json')) {
+                    await promises.writeFile(this.file, '{}');
+                } else if (this.file.endsWith('.yaml')) {
+                    await promises.writeFile(this.file, '');
+                } else  {
+                    throw new Error('Unsupported file format. Support: github.com/fastuptime');
+                }
+            }
+            
+            const data = await promises.readFile(this.file, 'utf8');
+            if (this.file.endsWith('.json')) {
                 this.data = JSON.parse(data);
+            } else if (this.file.endsWith('.yaml')) {
+                this.data = YAML.load(data);
+            } else {
+                throw new Error('Unsupported file format. Support: github.com/fastuptime');
             }
         } catch (error) {
-            throw new Error(`Error loading data: ${error.message}. Support: github.com/fastuptime`);
+            console.error(`Error loading data: ${error.message}. Support: github.com/fastuptime`);
         }
     }
+    
 
     async get(key) {
         return this.data[key];
@@ -79,7 +105,6 @@ class StarDB extends EventEmitter {
             }
         }
     }
-    
 
     async shift(key) {
         if (this.data[key]) {
@@ -152,7 +177,8 @@ class StarDB extends EventEmitter {
 
     async deleteAll(access = false) {
         if (!access) throw new Error('Permission denied! Support: github.com/fastuptime');
-        this.data = {};
+        if(this.file.endsWith('.json')) this.data = {};
+        if(this.file.endsWith('.yaml')) this.data = '';
         try {
             await this.save();
         } catch (error) {
