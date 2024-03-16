@@ -1,6 +1,6 @@
 {
   "name": "stardb",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A lightweight, reliable, easy-to-use, simple, fast, JSON/YAML/API database for Node.js",
   "main": "src/main.js",
   "scripts": {
