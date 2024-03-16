@@ -22,7 +22,7 @@ StarDB now supports the YAML file format in addition to JSON. You can store your
 
 ```js
 // Example usage with YAML
-const db = new StarDB('data.yaml').StarDB;
+const db = new StarDB('data.yaml');
 ```
 
 **Introduction**
@@ -57,9 +57,9 @@ const { StarDB, API } = require('stardb');
 2. **Create an Instance:**
 
 ```javascript
-const db = new StarDB('data.json').StarDB; // Replace 'data.json' with your desired file name
+const db = new StarDB('data.json'); // Replace 'data.json' with your desired file name
 // or
-const db = new StartDB('data.yaml').StarDB; // Replace 'data.yaml' with your desired file name
+const db = new StartDB('data.yaml'); // Replace 'data.yaml' with your desired file name
 ```
 
 Creates an instance of StarDB associated with the specified file ('data.json' in this example). StarDB will automatically create the file if it doesn't exist.
@@ -157,7 +157,7 @@ const { StarDB, API } = require('stardb');
 
 // Example usage with JSON
 
-const db = new StarDB('data.json').StarDB;
+const db = new StarDB('data.json');
 
 //
 
