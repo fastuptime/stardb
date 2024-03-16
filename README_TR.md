@@ -22,7 +22,7 @@ Artık StarDB, JSON'un yanı sıra YAML dosya formatını da destekliyor. Daha i
 
 ```js
 // YAML ile örnek kullanım
-const db = new StarDB('data.yaml').StarDB;
+const db = new StarDB('data.yaml');
 ```
 
 **Giriş**
@@ -57,9 +57,9 @@ const { StarDB, API } = require('stardb');
 2. **Bir Örnek Oluşturun:**
 
 ```javascript
-const db = new StarDB('data.json').StarDB; // 'data.json'u istediğiniz dosya adıyla değiştirin
+const db = new StarDB('data.json'); // 'data.json'u istediğiniz dosya adıyla değiştirin
 // veya
-const db = new StartDB('data.yaml').StarDB; // 'data.yaml'u istediğiniz dosya adıyla değiştirin
+const db = new StartDB('data.yaml'); // 'data.yaml'u istediğiniz dosya adıyla değiştirin
 ```
 
 Belirtilen dosya ('data.json' bu örnekte) ile ilişkili bir StarDB örneği oluşturur. Dosya mevcut değilse, StarDB ilk kullanımda otomatik olarak oluşturacaktır.
@@ -158,7 +158,7 @@ const { StarDB, API } = require('stardb');
 
 // JSON ile örnek kullanım
 
-const db = new StarDB('data.json').StarDB;
+const db = new StarDB('data.json');
 
 // Veri ekleme
 db.set('name', 'John Doe');
