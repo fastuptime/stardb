@@ -3,6 +3,8 @@ const { promises } = require('fs');
 const { access, constants } = require('fs').promises;
 const EventEmitter = require('events');
 const YAML = require('js-yaml');
+const express = require('express');
+const bodyParser = require('body-parser');
 
 class StarDB extends EventEmitter {
     constructor(file) {
@@ -200,4 +202,184 @@ class StarDB extends EventEmitter {
     }
 }
 
-module.exports = StarDB;
+class API extends EventEmitter {
+    constructor(options) {
+        super();
+        this.port = options.port || 3001;
+        this.db = new StarDB(options.db || 'starDB.json');
+        this.auth = options.auth || false;
+        this.authKeys = options.authKeys || [];
+
+        this.app = express();
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: true }));
+
+        this.app.get('/', (req, res) => {
+            res.send(`<center><h1>✨ StarDB API - Live 🔥</h1><p>Support: <a href="https://github.com/fastuptime">github.com/fastuptime</a></p></center>`);
+        });
+
+        if (this.auth) {
+            this.app.use((req, res, next) => {
+                if (this.authKeys.includes(req.headers['x-api-key'])) {
+                    next();
+                } else {
+                    res.status(401).send('Unauthorized');
+                }
+            });
+        }
+        
+        this.app.get('/get/:key', async (req, res) => {
+            const key = req.params.key;
+            const value = await this.db.get(key);
+            res.send(value);
+        });
+
+        this.app.post('/set/:key', async (req, res) => {
+            const key = req.params.key;
+            const value = req.body.value;
+            if (typeof value === 'undefined') return res.status(400).send('Value must be defined');
+            await this.db.set(key, value);
+            res.send('OK');
+        });
+
+        this.app.delete('/delete/:key', async (req, res) => {
+            const key = req.params.key;
+            await this.db.delete(key);
+            res.send('OK');
+        });
+
+        this.app.post('/push/:key', async (req, res) => {
+            const key = req.params.key;
+            const value = req.body.value;
+            if (typeof value === 'undefined') res.status(400).send('Value must be defined');
+            await this.db.push(key, value);
+            res.send('OK');
+        });
+
+        this.app.delete('/pop/:key', async (req, res) => {
+            const key = req.params.key;
+            await this.db.pop(key);
+            res.send('OK');
+        });
+
+        this.app.delete('/shift/:key', async (req, res) => {
+            const key = req.params.key;
+            await this.db.shift(key);
+            res.send('OK');
+        });
+
+        this.app.post('/unshift/:key', async (req, res) => {
+            const key = req.params.key;
+            const value = req.body.value;
+            res.status(400).send('Value must be defined');
+            await this.db.unshift(key, value);
+            res.send('OK');
+        });
+
+        this.app.delete('/deleteByIndex/:key/:index', async (req, res) => {
+            const key = req.params.key;
+            const index = parseInt(req.params.index);
+            await this.db.deleteByIndex(key, index);
+            res.send('OK');
+        });
+
+        this.app.post('/updateByIndex/:key/:index', async (req, res) => {
+            const key = req.params.key;
+            const index = parseInt(req.params.index);
+            const value = req.body.value;
+            if (typeof value === 'undefined') res.status(400).send('Value must be defined');
+            await this.db.updateByIndex(key, index, value);
+            res.send('OK');
+        });
+
+        this.app.get('/find/:key/:value', async (req, res) => {
+            const key = req.params.key;
+            const value = req.params.value;
+            if (typeof value === 'undefined') res.status(400).send('Value must be defined');
+            const result = await this.db.find(key, value);
+            res.send(result);
+        });
+
+        this.app.get('/filter/:key/:value', async (req, res) => {
+            const key = req.params.key;
+            const value = req.params.value;
+            if (typeof value === 'undefined') res.status(400).send('Value must be defined');
+            const result = await this.db.filter(key, value);
+            res.send(result);
+        });
+
+        this.app.get('/map/:key', async (req, res) => {
+            const key = req.params.key;
+            const result = await this.db.map(key, (element) => {
+                return element;
+            });
+            res.send(result);
+        });
+
+        this.app.get('/fetchAll', async (req, res) => {
+            const result = await this.db.fetchAll();
+            res.send(result);
+        });
+
+        this.app.delete('/deleteAll', async (req, res) => {
+            await this.db.deleteAll(true);
+            res.send('OK');
+        });
+
+        this.app.delete('/destroy', async (req, res) => {
+            await this.db.destroy(true);
+            res.send('OK');
+        });
+
+        this.db.on('set', (key, value) => {
+            this.emit('set', key, value);
+        });
+
+        this.db.on('delete', (key) => {
+            this.emit('delete', key);
+        });
+
+        this.db.on('push', (key, value) => {
+            this.emit('push', key, value);
+        });
+
+        this.db.on('pop', (key) => {
+            this.emit('pop', key);
+        });
+
+        this.db.on('shift', (key) => {
+            this.emit('shift', key);
+        });
+
+        this.db.on('unshift', (key, value) => {
+            this.emit('unshift', key, value);
+        });
+
+        this.db.on('deleteByIndex', (key, index) => {
+            this.emit('deleteByIndex', key, index);
+        });
+
+        this.db.on('updateByIndex', (key, index, value) => {
+            this.emit('updateByIndex', key, index, value);
+        });
+
+        this.db.on('deleteAll', () => {
+            this.emit('deleteAll');
+        });
+
+        this.db.on('destroy', () => {
+            this.emit('destroy');
+        });
+    }
+
+    listen() {
+        this.app.listen(this.port, () => {
+            console.log(`StarDB API listening at http://localhost:${this.port}`);
+        });
+    }
+}
+
+module.exports = {
+    StarDB,
+    API
+};
